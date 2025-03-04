@@ -1,4 +1,5 @@
 from helpers import timestamp, cryptography
+from CollectionNFT import Collection
 from json import dumps
 
 class Tokisen :
@@ -17,7 +18,7 @@ class Tokisen :
         payloadString = dumps(payload, sort_keys=True)
         self.tokenKey = cryptography.hash_string(payloadString)
         return self.tokenKey
-
+    
     def add_token(self, issuerPublicKey, numberoftokens):
         tokenList = []
         for _ in range(numberoftokens):            
