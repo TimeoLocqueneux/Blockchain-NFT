@@ -12,30 +12,35 @@ class Collection():
 
     def mint_token(self,owner, image_link,description,can_be_exchanged):
         """At the beginning the minter is the owner"""
+        if self.is_active() == True:
 
-        if len(self.tokens) < self.size: # If the collection has not reached its maximum capacity
+            if len(self.tokens) < self.size: # If the collection has not reached its maximum capacity
 
-            print("Minting")
-           # time.sleep(10) # “mint” period 
-                
-            # Token characteristics
-            payload = {}
-                                        
-            payload['image_link'] = image_link # link
-            payload['description'] = description # description
-            payload['can_be_exchanged'] = can_be_exchanged # bool
+                print("Minting")
+            # time.sleep(10) # “mint” period 
+                    
+                # Token characteristics
+                payload = {}
+                                            
+                payload['image_link'] = image_link # link
+                payload['description'] = description # description
+                payload['can_be_exchanged'] = can_be_exchanged # bool
 
-            payloadString = dumps(payload, sort_keys=True)
-            payload['identifier'] = cryptography.hash_string(payloadString)
+                payloadString = dumps(payload, sort_keys=True)
+                payload['identifier'] = cryptography.hash_string(payloadString)
 
-            payload['owner'] = owner
+                payload['owner'] = owner
 
-            self.tokens.append(payload)
+                self.tokens.append(payload)
+                print (self.tokens)
 
-            print("Minted !")
+                print("Minted !")
 
+            else:
+                print("Limit of tokens reached")
+            
         else:
-            print("Limit of tokens reached")
+            print("Minting is closed")
 
 
     def change_ownership(self, NewOwnerPublicKey, identifier):
@@ -47,6 +52,21 @@ class Collection():
                     token['owner'] = NewOwnerPublicKey
                 else:
                     print("The token can not be exchange")
+
+    def open_minting(self, time_in_seconds):
+        self.time_in_seconds = time_in_seconds
+        self.start_time=time.time()
+        print("Minting is open")
+
+    def is_active(self):
+        if (time.time() - self.start_time) < self.time_in_seconds:
+            return True
+        else:
+            return False
+        
+        
+        
+
             
         
     def display(self):
@@ -54,6 +74,7 @@ class Collection():
         for i, token in enumerate(self.tokens):
             output[f"Token No{i}"] = token
         return output
+
 
 
 
