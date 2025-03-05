@@ -10,7 +10,7 @@ class Collection():
         self.size = size
         self.tokens = []
 
-    def mint_token(self,owner, image_link,description):
+    def mint_token(self,MinterPublicKey, image_link,description):
         """At the beginning the minter is the owner"""
         if self.is_active() == True:
 
@@ -27,7 +27,7 @@ class Collection():
                 payload['identifier'] = len(self.tokens)
                 payload['image_link'] = image_link # link
                 payload['description'] = description # description
-                payload['owner'] = owner
+                payload['owner'] = MinterPublicKey
 
                 self.tokens.append(payload)
                 print (self.tokens)
@@ -37,21 +37,21 @@ class Collection():
             else:
                 print("Limit of tokens reached")
             
+            self.change_ownership(self.CollectionOwnerPublicKey, MinterPublicKey)
+
+            
         else:
             print("Minting is closed")
 
 
-    def change_ownership(self, OldOwnerPublicKey, NewOwnerPublicKey, identifier):
+    def change_ownership(self, SenderPublicKey, ReceiverPublicKey):
         """The change_ownership is a function use to exchange token between users"""             
 
-        # if the previous user owns the NFT, he can exchange it
+        return f'''
 
-        for token in self.tokens:
-            if token['identifier'] == identifier:
-                if token['owner'] == OldOwnerPublicKey:
-                    token['owner'] = NewOwnerPublicKey
-                else:
-                    print("The token can not be exchange")
+        {SenderPublicKey} sent a nft to {ReceiverPublicKey}
+
+        '''
 
     def open_minting(self, time_in_seconds):
         self.time_in_seconds = time_in_seconds
