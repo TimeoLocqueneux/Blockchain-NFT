@@ -10,24 +10,19 @@ class Collection():
         self.size = size
         self.tokens = []
 
-    def mint_token(self,owner, image_link,description,can_be_exchanged):
+    def mint_token(self,owner, image_link,description):
         """At the beginning the minter is the owner"""
 
         if len(self.tokens) < self.size: # If the collection has not reached its maximum capacity
 
             print("Minting")
-           # time.sleep(10) # “mint” period 
                 
             # Token characteristics
             payload = {}
-                                        
+
+            payload['identifier'] = len(self.tokens)
             payload['image_link'] = image_link # link
             payload['description'] = description # description
-            payload['can_be_exchanged'] = can_be_exchanged # bool
-
-            payloadString = dumps(payload, sort_keys=True)
-            payload['identifier'] = cryptography.hash_string(payloadString)
-
             payload['owner'] = owner
 
             self.tokens.append(payload)
@@ -38,15 +33,17 @@ class Collection():
             print("Limit of tokens reached")
 
 
-    def change_ownership(self, NewOwnerPublicKey, identifier):
+    def change_ownership(self, OldOwnerPublicKey, NewOwnerPublicKey, identifier):
         """The change_ownership is a function use to exchange token between users"""             
+
+        # if the previous user owns the NFT, he can exchange it
 
         for token in self.tokens:
             if token['identifier'] == identifier:
-                if token['can_be_exchanged'] == True:
+                if token['owner'] == OldOwnerPublicKey:
                     token['owner'] = NewOwnerPublicKey
                 else:
-                    print("The token can not be exchange")
+                    print("The sender does not owns the NFT")
             
         
     def display(self):
@@ -54,6 +51,7 @@ class Collection():
         for i, token in enumerate(self.tokens):
             output[f"Token No{i}"] = token
         return output
+    
 
 
 
