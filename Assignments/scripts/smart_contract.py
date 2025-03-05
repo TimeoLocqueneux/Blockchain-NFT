@@ -1,4 +1,5 @@
 from certificate import Certificate
+from helpers import timestamp, cryptography
 
 class SmartContractDefinition(Certificate):
     @staticmethod
@@ -31,8 +32,15 @@ class SmartContractDefinition(Certificate):
 
     def instantiate_contract(self):
         exec(self.sourceCode)
+        print(locals())
         return locals()['SmartContract'](self.issuerPublicKey)
+    
 
+    def instantiate_collection(self, size):
+        exec(self.sourceCode)
+        print(locals())
+
+        return locals()['Collection'](self.issuerPublicKey, size)
 
 
 class SmartContractWritingOperation(Certificate):

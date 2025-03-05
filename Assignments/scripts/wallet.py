@@ -7,6 +7,7 @@ class Wallet:
         self.__privateKey = cryptography.generate_random_private_key()    # Random private key
         self.publicKey = cryptography.get_public_key_from_private_key(self.__privateKey)  # Public key is generated using private key
         
+        
     def sign(self, certificate):
         certificateHash = certificate.hash()   # We are signing the hash so we need to generate it
         privateKey = self.__privateKey         # Our private key signs
