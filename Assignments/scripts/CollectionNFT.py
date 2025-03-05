@@ -144,14 +144,14 @@ class Collection():
             print("Minting is closed")
 
 
-    def change_ownership(self, token_hash, ReceiverPublicKey):
+    def change_ownership(self, publicKey, token_hash, ReceiverPublicKey):
         """The change_ownership is a function use to exchange token between users"""             
-
+        print('ownership changed')
         return f'''
         I sent {token_hash} to {ReceiverPublicKey}
         '''
         
-
+    
     
 
     def open_minting(self,publicKey, time_in_seconds):
@@ -168,7 +168,6 @@ class Collection():
         
         
     
-        
     def display(self):
         output = {}
         for i, token in enumerate(self.tokens):
