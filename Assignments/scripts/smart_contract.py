@@ -59,7 +59,11 @@ class SmartContractWritingOperation(Certificate):
     
     def apply_on_contract(self, contractPythonObject):
         applyfunction = getattr(contractPythonObject, self.targetFunctionName)
-        return applyfunction(*[self.issuerPublicKey, f"{self.functionArgumentList[0]}"])
+        print(self.functionArgumentList)
+        if self.functionArgumentList == []:
+            return applyfunction(*[self.issuerPublicKey])
+        else:
+            return applyfunction(*[self.issuerPublicKey, f"{self.functionArgumentList[0]}"])
         
 
 

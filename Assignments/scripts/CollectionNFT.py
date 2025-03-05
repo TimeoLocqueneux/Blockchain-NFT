@@ -16,6 +16,7 @@ class Collection():
         self.timestamp = timestamp.now()
         self.size = size
         self.token_used = 0
+        self.minting = False
         self.tokens = {'Token No0': {'name': 'pikachu', 'image_link': 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png', 'description': 'electric'}, 
 'Token No1': {'name': 'bulbasaur', 'image_link': 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png', 'description': 'grass'}, 
 'Token No2': {'name': 'charmander', 'image_link': 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/4.png', 'description': 'fire'}, 
@@ -110,32 +111,35 @@ class Collection():
 
     def mint_token(self,MinterPublicKey):
         """At the beginning the minter is the owner"""
-        if self.is_active() == True:
+        if self.minting==True :
+            if self.is_active() == True:
             
-            if len(self.tokens) < self.size: # If the collection has not reached its maximum capacity
+                if self.token_used < self.size: # If the collection has not reached its maximum capacity
+                    
+                    print("Minting")
+
+                    # Token characteristics
+                    token_key = f'Token No{self.token_used}'
+                    token = self.tokens[token_key]
+                    payload = {
+                        'name': token['name'],
+                        'image_link': token['image_link'],
+                        'description': token['description'],
+                    }
+                    # h = hash(payload)
+                    self.token_used += 1
+                    print("Minted !")
+
+                else:
+                    print("Limit of tokens reached")
                 
-                print("Minting")
+                self.change_ownership(self.CollectionOwner, MinterPublicKey)
+                # if h:
+                #     return h
 
-                # Token characteristics
-                token_key = f'Token No{self.token_used}'
-                token = self.tokens[token_key]
-                payload = {
-                    'name': token['name'],
-                    'image_link': token['image_link'],
-                    'description': token['description'],
-                }
-                h = hash(payload)
-                self.token_used += 1
-                print("Minted !")
-
+                
             else:
-                print("Limit of tokens reached")
-            
-            self.change_ownership(self.CollectionOwnerPublicKey, MinterPublicKey)
-            if h:
-                return h
-
-            
+                print("Minting is closed")
         else:
             print("Minting is closed")
 
@@ -153,6 +157,7 @@ class Collection():
     def open_minting(self, time_in_seconds):
         self.time_in_seconds = time_in_seconds
         self.start_time=time.time()
+        self.minting = True
         print("Minting is open")
 
     def is_active(self):
