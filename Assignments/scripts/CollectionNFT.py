@@ -132,14 +132,15 @@ class Collection():
 
                 else:
                     print("Limit of tokens reached")
+                   
                 
-                self.change_ownership(self.CollectionOwner, MinterPublicKey)
+                self.change_ownership(self.CollectionOwner, self.CollectionOwner, MinterPublicKey)
                 # if h:
                 #     return h
 
                 
             else:
-                print("Minting is closed")
+                print("Minting is closed, sorry")
         else:
             print("Minting is closed")
 
@@ -154,14 +155,14 @@ class Collection():
     
     
 
-    def open_minting(self,publicKey, time_in_seconds):
-        self.time_in_seconds = time_in_seconds
+    def open_minting(self,publicKey, time_in_miliseconds):
+        self.time_in_miliseconds = time_in_miliseconds
         self.start_time=timestamp.now()
         self.minting = True
         print("Minting is open")
 
     def is_active(self):
-        if (timestamp.now() - self.start_time) < self.time_in_seconds:
+        if (timestamp.now() - self.start_time) < int(self.time_in_miliseconds):
             return True
         else:
             return False
