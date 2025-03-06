@@ -4,13 +4,6 @@ from json import dumps
 
 class Collection():
 
-    @staticmethod
-    def hash(payload):                  # We want to hash the whole payload
-        payloadString = dumps(payload, sort_keys=True)     # Here I use dumps to transform a dictionary into a string, also sort_keys to ensure all keys will be in the same order
-        return cryptography.hash_string(payloadString)     # The "cryptography" module does the rest
-    
-
-
     def __init__(self, CollectionOwner, size):
         self.CollectionOwner = CollectionOwner
         self.size = size
