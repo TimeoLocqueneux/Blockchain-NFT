@@ -1,5 +1,5 @@
 from helpers import timestamp, cryptography
-
+from smart_contract import SmartContractWritingOperation
 from json import dumps
 
 class Collection():
@@ -115,18 +115,7 @@ class Collection():
             if self.is_active() == True:
             
                 if self.token_used < self.size: # If the collection has not reached its maximum capacity
-                    
-                    print("Minting")
 
-                    # Token characteristics
-                    token_key = f'Token No{self.token_used}'
-                    token = self.tokens[token_key]
-                    payload = {
-                        'name': token['name'],
-                        'image_link': token['image_link'],
-                        'description': token['description'],
-                    }
-                    # h = hash(payload)
                     self.token_used += 1
                     print("Minted !")
 
@@ -134,10 +123,8 @@ class Collection():
                     print("Limit of tokens reached")
                    
                 
-                self.change_ownership(self.CollectionOwner, self.CollectionOwner, MinterPublicKey)
-                # if h:
-                #     return h
-
+                self.change_ownership(self.CollectionOwner, self.token_used, MinterPublicKey)
+                
                 
             else:
                 print("Minting is closed, sorry")
@@ -145,15 +132,14 @@ class Collection():
             print("Minting is closed")
 
 
-    def change_ownership(self, publicKey, token_hash, ReceiverPublicKey):
-        """The change_ownership is a function use to exchange token between users"""             
+    def change_ownership(self, PublicKey, token_number, ReceiverPublicKey):
+        """The change_ownership is a function use to exchange token between users"""  
+        self.tokens[f'Token No{token_number}']['owner'] = ReceiverPublicKey
         print('ownership changed')
         return f'''
-        I sent {token_hash} to {ReceiverPublicKey}
+        I sent {token_number} to {ReceiverPublicKey}
         '''
         
-    
-    
 
     def open_minting(self,publicKey, time_in_miliseconds):
         self.time_in_miliseconds = time_in_miliseconds

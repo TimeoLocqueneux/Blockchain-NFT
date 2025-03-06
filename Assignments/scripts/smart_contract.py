@@ -1,15 +1,18 @@
 from certificate import Certificate
 from helpers import timestamp, cryptography
+from json import dumps
 
 class SmartContractDefinition(Certificate):
     @staticmethod
     def get_smart_contract_at_current_state(blockchain, targetSmartContractHash):
         Operations = []
         for block in blockchain.blockList:
-            print(block.display())
             for certificate in block.certificateList:
                 if isinstance(certificate, SmartContractDefinition):
-                    certificate = certificate.instantiate_contract()
+                    try:
+                        certificate = certificate.instantiate_contract()
+                    except Exception as e:
+                        certificate = certificate.instantiate_collection(8)
                     for block2 in blockchain.blockList:
                         for certificate2 in block2.certificateList:
                             if isinstance(certificate2, SmartContractWritingOperation) and certificate2.targetSmartContractHash == targetSmartContractHash:
@@ -30,15 +33,18 @@ class SmartContractDefinition(Certificate):
         payload['sourceCode'] = self.sourceCode
         return payload
 
+    def hash(self):
+        payload = self.build_payload()
+        payloadString = dumps(payload, sort_keys=True)
+        return cryptography.hash_string(payloadString)
+    
     def instantiate_contract(self):
         exec(self.sourceCode)
-        print(locals())
         return locals()['SmartContract'](self.issuerPublicKey)
     
 
     def instantiate_collection(self, size):
         exec(self.sourceCode)
-        print(locals())
 
         return locals()['Collection'](self.issuerPublicKey, size)
 
@@ -59,7 +65,6 @@ class SmartContractWritingOperation(Certificate):
     
     def apply_on_contract(self, contractPythonObject):
         applyfunction = getattr(contractPythonObject, self.targetFunctionName)
-        print(self.functionArgumentList)
         if self.functionArgumentList == []:
             return applyfunction(*[self.issuerPublicKey])
         else:
