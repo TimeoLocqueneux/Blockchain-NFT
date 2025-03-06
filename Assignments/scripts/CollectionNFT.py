@@ -13,7 +13,6 @@ class Collection():
 
     def __init__(self, CollectionOwner, size):
         self.CollectionOwner = CollectionOwner
-        self.timestamp = timestamp.now()
         self.size = size
         self.token_used = 0
         self.minting = False
@@ -109,10 +108,14 @@ class Collection():
 'Token No89': {'name': 'hoppip', 'image_link': 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/187.png', 'description': 'grass'}}
 
 
-    def mint_token(self,MinterPublicKey):
+    def mint_token(self,MinterPublicKey, latest_block_number):
         """At the beginning the minter is the owner"""
         if self.minting==True :
-            if self.is_active() == True:
+            if int(latest_block_number) >= int(self.end_block_number):
+                self.minting == False
+                print("Minting is closed")
+
+            else:
             
                 if self.token_used < self.size: # If the collection has not reached its maximum capacity
 
@@ -126,10 +129,9 @@ class Collection():
                 self.change_ownership(self.CollectionOwner, self.token_used, MinterPublicKey)
                 
                 
-            else:
-                print("Minting is closed, sorry")
+            
         else:
-            print("Minting is closed")
+            print("Minting is not opened yet")
 
 
     def change_ownership(self, PublicKey, token_number, ReceiverPublicKey):
@@ -141,18 +143,13 @@ class Collection():
         '''
         
 
-    def open_minting(self,publicKey, time_in_miliseconds):
-        self.time_in_miliseconds = time_in_miliseconds
-        self.start_time=timestamp.now()
+    def open_minting(self,issuerpublicKey, block_number, number_of_blocks):
         self.minting = True
+        self.number_of_blocks = int(number_of_blocks)
+        self.end_block_number = int(block_number) + int(number_of_blocks)
         print("Minting is open")
 
-    def is_active(self):
-        if (timestamp.now() - self.start_time) < int(self.time_in_miliseconds):
-            return True
-        else:
-            return False
-        
+
         
     
     def display(self):
